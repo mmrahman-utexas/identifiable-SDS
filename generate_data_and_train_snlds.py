@@ -1,5 +1,6 @@
 import argparse
 import os
+
 import sys
 import time
 
@@ -12,6 +13,9 @@ from tqdm import tqdm
 from dataloaders.BouncingBallDataLoader import MdDataLoader
 from models.modules import MLP
 from models.VariationalSNLDS import VariationalSNLDS
+
+
+
 import torch
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
@@ -20,7 +24,7 @@ from utils.transitions import (get_trans_mat, func_cosine_with_sparsity, func_po
 
 def save_checkpoint(state, filename='model'):
     os.makedirs("results/models_sds/", exist_ok=True)
-    torch.save(state, "results/models_sds/" + filename + '.pth.tar')
+    torch.save(state, "results/models_sds/" + filename + '.ckpt')
 
 def parse_args():
 
@@ -34,7 +38,7 @@ def parse_args():
     parser.add_argument('--generate_data', action='store_true', help='Generate data and then train')
     parser.add_argument('--no-train', action='store_true', help='Activate no train')
     parser.add_argument('--images', action='store_true', help='Use images')
-    parser.add_argument('--device', default='cuda:0', type=str, help='Device to use')
+    parser.add_argument('--device', default='0', type=str, help='Device to use')
     parser.add_argument('--degree', default=3, type=int, metavar='N', help='degree of polynomial')
     parser.add_argument('--restarts_num', default=10, type=int, metavar='N', help='number of random restarts')
     parser.add_argument('--seq_length', default=200, type=int, metavar='N', help='number of timesteps')
@@ -65,7 +69,7 @@ def train(path, num_states, dim_obs, dim_latent, T, data_size, sparsity_prob, da
         init_temperature = 10
         iter_update_temp = 50
         iter_check_temp = 200
-        epoch_num = 2
+        epoch_num = 200
         learning_rate = 5e-4
         gamma_decay = 0.8
         scheduler_epochs = 80
@@ -84,7 +88,7 @@ def train(path, num_states, dim_obs, dim_latent, T, data_size, sparsity_prob, da
     for restart_num in range(args.restarts_num):
         best_elbo = -torch.inf
         if args.images:
-            dataloader = DataLoader(dl, batch_size=16, shuffle=True)
+            dataloader = DataLoader(dl, batch_size=6, shuffle=True)
         else:
             dataloader = DataLoader(dl, batch_size=50, shuffle=True)
         model = VariationalSNLDS(dim_obs, dim_latent, 64, num_states, encoder_type='video' if images else 'recurent', device=device, annealing=False, inference='alpha', beta=0)
@@ -171,7 +175,7 @@ if __name__=="__main__":
     num_states = args.num_states
     sparsity_prob = args.sparsity_prob
     images = args.images
-    device = args.device
+    device = torch.device(args.device)
     degree = args.degree
     restarts_num = args.restarts_num
     for k, seed in enumerate(args.seeds):

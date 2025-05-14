@@ -49,7 +49,7 @@ class VariationalSNLDS(nn.Module):
             self.encoder_mean_var = nn.Linear(hidden_dim, 2*latent_dim).to(device).float()
         # Decoder p(x|z)
         if self.encoder_type=='video':
-            self.decoder = CNNFastDecoder(latent_dim, 3, n_feat, n_layers=n_layers).to(device).float()
+            self.decoder = CNNFastDecoder(latent_dim, 1, n_feat, n_layers=n_layers).to(device).float()
         else:
             self.decoder = MLP(latent_dim, obs_dim, hidden_dim, 'leakyrelu').to(device).float()
         #self.decoder = nn.Linear(latent_dim, obs_dim).to(device)

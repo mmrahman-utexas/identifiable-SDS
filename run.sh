@@ -1,1 +1,1 @@
-python3 generate_data_and_train_snlds.py  --seeds 1111 --dim_obs 2 --images --dim_latent 2 --num_states 4 --sparsity_prob 0.0 --data_type cosine --device cuda:8 --generate_data --restarts_num 5 --seq_length 4000 --num_samples 249 > log_train_SDS_images.log
+python3 generate_data_and_train_snlds.py  --seeds 1111 --dim_obs 2 --images --dim_latent 2 --num_states 4 --sparsity_prob 0.0 --data_type cosine --device cuda:4 --generate_data --restarts_num 5 --seq_length 4000 --num_samples 249 > log_train_SDS_images.log
