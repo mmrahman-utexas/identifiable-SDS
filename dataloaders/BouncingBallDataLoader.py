@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 import os
 
 import numpy as np
+import torch
 
 class BouncingBallDataLoader(Dataset):
 
@@ -38,3 +39,20 @@ class BouncingBallDataLoader(Dataset):
                 im /= 255.0
             im = im.transpose((0,3,1,2)) - 0.5
         return (im,)
+
+class MdDataLoader(Dataset):
+
+    def __init__(self, data_path):
+        self.data = torch.load(data_path)
+        self.image_gt = self.data['yt']
+        self.z_gt = self.data['xt']
+        self.param = self.data['param']
+        self.num_samples = len(self.image_gt)
+
+    def __len__(self):
+        return self.num_samples
+    
+    def __getitem__(self, idx):
+        image = self.image_gt[idx][:,None,:,:] - 0.5
+        return (image,)
+            

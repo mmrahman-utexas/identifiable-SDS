@@ -39,7 +39,7 @@ class VariationalSNLDS(nn.Module):
             #self.encoder = nn.Linear(obs_dim, 2*latent_dim).to(device).float()
             self.encoder = MLP(obs_dim, 2*latent_dim, hidden_dim, 'leakyrelu').to(device).float()
         elif self.encoder_type=='video':
-            self.img_embedding = CNNFastEncoder(3, hidden_dim, n_feat, n_layers=n_layers).to(device).float()
+            self.img_embedding = CNNFastEncoder(1, hidden_dim, n_feat, n_layers=n_layers).to(device).float()
             self.encoder = nn.LSTM(hidden_dim, hidden_dim, num_layers=2, batch_first=True, bidirectional=True).to(device).float()
             self.encoder_causal = nn.LSTM(hidden_dim*2, hidden_dim, num_layers=2, batch_first=True, bidirectional=False).to(device).float()
             self.encoder_mean_var = nn.Linear(hidden_dim, 2*latent_dim).to(device).float()
